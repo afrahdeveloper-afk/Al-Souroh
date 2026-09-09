@@ -5,7 +5,6 @@ import { useLang } from '../providers/LanguageProvider';
 import { Eyebrow, FadeUp, MaskReveal } from '../components/primitives';
 import { mediaUrl, usePageHeroImage } from '../lib/siteContent';
 import { listNews } from '../dashboard/services/news';
-import { publicClient } from '../lib/publicClient';
 import type { News } from '../dashboard/types';
 import { useApiResource, fetchAllPages } from '../lib/publicApi';
 
@@ -43,7 +42,7 @@ export function NewsPage() {
   const { isAr, t } = useLang();
   const [visible, setVisible] = useState(4);
   const { data: articles, loading, error } = useApiResource(
-    () => fetchAllPages<News>((page) => listNews({ page }, publicClient)),
+    () => fetchAllPages<News>((page) => listNews({ page })),
     []
   );
   const list = articles ?? [];

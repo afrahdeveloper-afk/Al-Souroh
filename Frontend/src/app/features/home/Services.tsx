@@ -9,7 +9,6 @@ import {
 import { img, IMG } from '../../lib/images';
 import { Eyebrow } from '../../components/primitives';
 import { listServices, sortServicesByPriority } from '../../dashboard/services/services';
-import { publicClient } from '../../lib/publicClient';
 import { useApiResource } from '../../lib/publicApi';
 import { mediaUrl } from '../../lib/siteContent';
 import { useLang } from '../../providers/LanguageProvider';
@@ -88,7 +87,7 @@ export function Services() {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const { t, isAr } = useLang();
-  const { data: servicesResponse } = useApiResource(() => listServices({}, publicClient), []);
+  const { data: servicesResponse } = useApiResource(() => listServices(), []);
 
   const items =
     servicesResponse && servicesResponse.results.length > 0

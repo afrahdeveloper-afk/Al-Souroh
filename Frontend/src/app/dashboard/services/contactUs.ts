@@ -1,28 +1,22 @@
-import { apiClient, type GetClient } from './client';
-import { ApiError, type ContactUs, type ContactUsInput } from '../types';
+import { supabase } from '../../lib/supabaseClient';
+import { unwrap, unwrapMaybe } from './client';
+import type { ContactUs, ContactUsInput } from '../types';
 
-/**
- * Singleton resource — the backend only ever holds one Contact Us record.
- * `getContactUs` returns `null` on a 404 so callers can tell "no record yet"
- * apart from a real failure and decide whether to POST (create) or
- * PATCH (update) on save.
- *
- * Optional `client` — see `getGeneralInformation` for why (public site vs.
- * Dashboard editor).
- */
-export async function getContactUs(client: GetClient = apiClient): Promise<ContactUs | null> {
-  try {
-    return await client.get<ContactUs>('/api/contact-us/');
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 404) return null;
-    throw error;
-  }
+const TABLE = 'contact_us';
+const ROW_ID = 1;
+
+/** Singleton resource, always at row id 1. `null` means no record exists yet, so callers know to create instead of update on first save. */
+export async function getContactUs(): Promise<ContactUs | null> {
+  const result = await supabase.from(TABLE).select('*').eq('id', ROW_ID).maybeSingle();
+  return unwrapMaybe<ContactUs>(result);
 }
 
-export function createContactUs(input: ContactUsInput): Promise<ContactUs> {
-  return apiClient.post<ContactUs>('/api/contact-us/', input);
+export async function createContactUs(input: ContactUsInput): Promise<ContactUs> {
+  const result = await supabase.from(TABLE).insert({ id: ROW_ID, ...input }).select().single();
+  return unwrap<ContactUs>(result);
 }
 
-export function updateContactUs(input: Partial<ContactUsInput>): Promise<ContactUs> {
-  return apiClient.patch<ContactUs>('/api/contact-us/', input);
+export async function updateContactUs(input: Partial<ContactUsInput>): Promise<ContactUs> {
+  const result = await supabase.from(TABLE).update(input).eq('id', ROW_ID).select().single();
+  return unwrap<ContactUs>(result);
 }

@@ -5,10 +5,10 @@ import { getCurrentUser, login as loginRequest, logout as logoutRequest } from '
 import type { CurrentUser } from '../types';
 
 /**
- * Session state for the whole `/dashboard` tree, backed by the real
- * `/api/auth/*` endpoints (session-cookie auth — see `services/client.ts`
- * for why every call is routed through the same-site `/api` proxy). Mounted
- * once in `DashboardLayout` so it survives navigation between CMS screens;
+ * Session state for the whole `/dashboard` tree, backed by Supabase Auth
+ * (see `services/auth.ts`) — a bearer JWT kept by the Supabase client, not a
+ * cookie, so there's no same-origin proxy requirement here. Mounted once in
+ * `DashboardLayout` so it survives navigation between CMS screens;
  * `RequireAuth` reads it to gate every route except `/dashboard/login`.
  */
 type AuthContextValue = {

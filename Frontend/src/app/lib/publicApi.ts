@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import type { Paginated } from '../dashboard/types';
 
 /**
- * Shared fetch-on-mount hook for the public portfolio pages now reading the
- * real Souroh Dashboard API (all GET endpoints are public/anonymous per the
- * OpenAPI spec — see CLAUDE.md's "Portfolio-side API wiring" note). Kept
- * intentionally minimal: no caching, no retries beyond what apiClient itself
- * already does for CSRF — just the loading/data/error triad every page here
- * needs, so six pages don't each hand-roll the same three `useState` calls.
+ * Shared fetch-on-mount hook for the public portfolio pages reading
+ * Supabase directly (every table's `SELECT` policy allows anonymous reads —
+ * see `supabase/schema.sql`). Kept intentionally minimal: no caching, no
+ * retries — just the loading/data/error triad every page here needs, so six
+ * pages don't each hand-roll the same three `useState` calls.
  */
 export function useApiResource<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
   const [data, setData] = useState<T | null>(null);

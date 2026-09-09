@@ -52,19 +52,4 @@ export default defineConfig({
   },
 
   assetsInclude: ["**/*.csv"],
-
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://apisorouh.trycvision.com/",
-        changeOrigin: true,
-        secure: true,
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq) => {
-            proxyReq.setHeader("origin", "https://apisorouh.trycvision.com/");
-          });
-        },
-      },
-    },
-  },
 });

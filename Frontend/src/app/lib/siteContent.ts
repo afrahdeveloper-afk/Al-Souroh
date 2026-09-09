@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { getContactUs } from '../dashboard/services/contactUs';
 import { getGeneralInformation } from '../dashboard/services/generalInformation';
 import { getStaticImages } from '../dashboard/services/staticImages';
-import { publicClient } from './publicClient';
 import type {
   ContactUs,
   GeneralInformation,
@@ -13,7 +12,7 @@ import type {
 
 /**
  * Shared, process-wide cache for the CMS content every public page reads —
- * the six `/api/static-images/` singletons plus the two records
+ * the six static-image singleton tables plus the two records
  * (GeneralInformation, ContactUs) that several components each need.
  *
  * Why this exists on top of `useApiResource`: that hook fetches per mount,
@@ -35,31 +34,16 @@ import type {
 
 
 /**
- * Normalizes an image URL coming back from the API.
- *
- * The backend hands out absolute `http://apisorouh.trycvision.com/media/...`
- * URLs. A browser on an https page blocks those outright as mixed content —
- * the image simply never appears, with no visible error anywhere in the app.
- * The same host serves every one of those files over https (verified live),
- * so on an https page the scheme is upgraded. On a plain http page (local
- * dev) the URL is left exactly as the backend gave it, since there is no
- * mixed-content rule to satisfy there and nothing to gain by rewriting.
- *
- * Returns `undefined` for a missing/blank value, so callers can use it
- * directly as the condition for whether to render an `<img>` at all.
+ * Normalizes an image URL coming back from Supabase (always `https://...`,
+ * so there's no mixed-content scheme to fix up the way the old Django
+ * backend needed — this now just trims and blank-checks). Returns
+ * `undefined` for a missing/blank value, so callers can use it directly as
+ * the condition for whether to render an `<img>` at all.
  */
 export function mediaUrl(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
   const trimmed = url.trim();
-  if (!trimmed) return undefined;
-  if (
-    typeof window !== 'undefined' &&
-    window.location.protocol === 'https:' &&
-    trimmed.startsWith('http://')
-  ) {
-    return `https://${trimmed.slice('http://'.length)}`;
-  }
-  return trimmed;
+  return trimmed || undefined;
 }
 
 
@@ -85,15 +69,15 @@ function cached<T>(key: string, load: () => Promise<T | null>): Cached<T> {
 export function loadStaticImages<K extends StaticImageGroupKey>(
   group: K,
 ): Promise<StaticImageRecordMap[K] | null> {
-  return cached(`static-images:${group}`, () => getStaticImages(group, publicClient)).promise;
+  return cached(`static-images:${group}`, () => getStaticImages(group)).promise;
 }
 
 export function loadGeneralInformation(): Promise<GeneralInformation | null> {
-  return cached('general-information', () => getGeneralInformation(publicClient)).promise;
+  return cached('general-information', () => getGeneralInformation()).promise;
 }
 
 export function loadContactUs(): Promise<ContactUs | null> {
-  return cached('contact-us', () => getContactUs(publicClient)).promise;
+  return cached('contact-us', () => getContactUs()).promise;
 }
 
 
@@ -117,7 +101,7 @@ function useCached<T>(key: string, load: () => Promise<T | null>): T | null {
 export function useStaticImages<K extends StaticImageGroupKey>(
   group: K,
 ): StaticImageRecordMap[K] | null {
-  return useCached(`static-images:${group}`, () => getStaticImages(group, publicClient));
+  return useCached(`static-images:${group}`, () => getStaticImages(group));
 }
 
 /** The single hero image of a Services / Projects / News / Contact page. */
@@ -128,11 +112,11 @@ export function usePageHeroImage(
 }
 
 export function useGeneralInformation(): GeneralInformation | null {
-  return useCached('general-information', () => getGeneralInformation(publicClient));
+  return useCached('general-information', () => getGeneralInformation());
 }
 
 export function useContactUs(): ContactUs | null {
-  return useCached('contact-us', () => getContactUs(publicClient));
+  return useCached('contact-us', () => getContactUs());
 }
 
 

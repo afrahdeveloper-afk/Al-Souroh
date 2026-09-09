@@ -1,29 +1,26 @@
-import { apiClient, clearCsrfToken, getCsrfToken, setCsrfToken } from './client';
-import type { CurrentUser } from '../types';
+import { supabase } from '../../lib/supabaseClient';
+import { ApiError, type CurrentUser } from '../types';
 
-type LoginResponse = {
-  detail: string;
-  user: CurrentUser;
-  csrftoken: string;
-};
-
-/** GET /api/auth/user/ — 401/403 (no session) is a normal "not logged in" outcome, not an error. */
-export async function getCurrentUser(): Promise<CurrentUser | null> {
-  try {
-    return await apiClient.get<CurrentUser>('/api/auth/user/');
-  } catch {
-    return null;
-  }
+function toCurrentUser(user: { id: string; email?: string | null }): CurrentUser {
+  return { id: user.id, username: user.email ?? user.id };
 }
 
+/** No session (never logged in, or expired) is a normal "not logged in" outcome, not an error. */
+export async function getCurrentUser(): Promise<CurrentUser | null> {
+  const { data, error } = await supabase.auth.getSession();
+  if (error || !data.session) return null;
+  return toCurrentUser(data.session.user);
+}
+
+/** `username` is a Supabase Auth email address — the Dashboard's "Name" field just passes whatever it's given straight through. */
 export async function login(username: string, password: string): Promise<CurrentUser> {
-  await getCsrfToken();
-  const response = await apiClient.post<LoginResponse>('/api/auth/login/', { username, password });
-  setCsrfToken(response.csrftoken);
-  return response.user;
+  const { data, error } = await supabase.auth.signInWithPassword({ email: username, password });
+  if (error || !data.user) {
+    throw new ApiError(error?.status ?? 400, { detail: error?.message ?? 'Invalid credentials.' });
+  }
+  return toCurrentUser(data.user);
 }
 
 export async function logout(): Promise<void> {
-  await apiClient.post('/api/auth/logout/');
-  clearCsrfToken();
+  await supabase.auth.signOut();
 }

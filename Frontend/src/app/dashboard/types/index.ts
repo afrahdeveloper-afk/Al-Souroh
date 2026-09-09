@@ -1,6 +1,7 @@
 
 export type CurrentUser = {
-  id: number;
+  /** A Supabase Auth user id (UUID), not a Django numeric pk. */
+  id: string;
   username: string;
 };
 

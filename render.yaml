@@ -21,7 +21,7 @@ services:
         value: "True"
       - key: CSRF_COOKIE_SECURE
         value: "True"
-      # Neon.tech Postgres connection string (permanent — unlike Render's
+      # Supabase Postgres connection string (permanent — unlike Render's
       # own free Postgres, which auto-deletes after 30 days). Filled in
       # during Blueprint setup, not stored in this file.
       - key: DATABASE_URL

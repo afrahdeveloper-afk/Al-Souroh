@@ -6,6 +6,11 @@ name: Deploy Frontend to Vercel
 # push on its own — running this workflow too would just deploy it twice.
 # Requires 3 repo secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
 # (see the setup notes shared alongside this file).
+#
+# Runs from the repo root (not Frontend/): the Vercel project's own
+# "Root Directory" setting is already "Frontend", so vercel pull/build/deploy
+# apply that themselves. cd-ing into Frontend first would make it look for
+# Frontend/Frontend and fail to find the app (vite: not found).
 
 on:
   push:
@@ -15,10 +20,6 @@ on:
       - ".github/workflows/frontend-deploy-vercel.yml"
   workflow_dispatch: {}
 
-defaults:
-  run:
-    working-directory: Frontend
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -26,16 +27,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: Frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest

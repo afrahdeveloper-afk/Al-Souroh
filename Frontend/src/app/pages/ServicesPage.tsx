@@ -5,6 +5,7 @@ import { useLang } from '../providers/LanguageProvider';
 import { ArrowUpRight, CheckCircle } from 'lucide-react';
 import { Eyebrow, FadeUp, MaskReveal } from '../components/primitives';
 import { listServices, sortServicesByPriority } from '../dashboard/services/services';
+import { publicClient } from '../lib/publicClient';
 import type { Service } from '../dashboard/types';
 import { useApiResource, fetchAllPages } from '../lib/publicApi';
 import { mediaUrl, usePageHeroImage } from '../lib/siteContent';
@@ -56,7 +57,7 @@ export function ServicesPage() {
   const heroImage = usePageHeroImage('services');
 
   const { data: services, loading, error } = useApiResource(
-    () => fetchAllPages<Service>((page) => listServices({ page })),
+    () => fetchAllPages<Service>((page) => listServices({ page }, publicClient)),
     []
   );
 

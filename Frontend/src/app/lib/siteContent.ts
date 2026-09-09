@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getContactUs } from '../dashboard/services/contactUs';
 import { getGeneralInformation } from '../dashboard/services/generalInformation';
 import { getStaticImages } from '../dashboard/services/staticImages';
+import { publicClient } from './publicClient';
 import type {
   ContactUs,
   GeneralInformation,
@@ -84,15 +85,15 @@ function cached<T>(key: string, load: () => Promise<T | null>): Cached<T> {
 export function loadStaticImages<K extends StaticImageGroupKey>(
   group: K,
 ): Promise<StaticImageRecordMap[K] | null> {
-  return cached(`static-images:${group}`, () => getStaticImages(group)).promise;
+  return cached(`static-images:${group}`, () => getStaticImages(group, publicClient)).promise;
 }
 
 export function loadGeneralInformation(): Promise<GeneralInformation | null> {
-  return cached('general-information', () => getGeneralInformation()).promise;
+  return cached('general-information', () => getGeneralInformation(publicClient)).promise;
 }
 
 export function loadContactUs(): Promise<ContactUs | null> {
-  return cached('contact-us', () => getContactUs()).promise;
+  return cached('contact-us', () => getContactUs(publicClient)).promise;
 }
 
 
@@ -116,7 +117,7 @@ function useCached<T>(key: string, load: () => Promise<T | null>): T | null {
 export function useStaticImages<K extends StaticImageGroupKey>(
   group: K,
 ): StaticImageRecordMap[K] | null {
-  return useCached(`static-images:${group}`, () => getStaticImages(group));
+  return useCached(`static-images:${group}`, () => getStaticImages(group, publicClient));
 }
 
 /** The single hero image of a Services / Projects / News / Contact page. */
@@ -127,11 +128,11 @@ export function usePageHeroImage(
 }
 
 export function useGeneralInformation(): GeneralInformation | null {
-  return useCached('general-information', () => getGeneralInformation());
+  return useCached('general-information', () => getGeneralInformation(publicClient));
 }
 
 export function useContactUs(): ContactUs | null {
-  return useCached('contact-us', () => getContactUs());
+  return useCached('contact-us', () => getContactUs(publicClient));
 }
 
 

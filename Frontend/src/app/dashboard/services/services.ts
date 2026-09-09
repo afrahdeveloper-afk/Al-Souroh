@@ -1,8 +1,9 @@
-import { apiClient, toFormData } from './client';
+import { apiClient, toFormData, type GetClient } from './client';
 import type { ListParams, Paginated, Service, ServiceInput } from '../types';
 
-export function listServices(params: ListParams = {}): Promise<Paginated<Service>> {
-  return apiClient.get<Paginated<Service>>('/api/services/', params);
+/** Optional `client` — see `getGeneralInformation` for why (public site vs. Dashboard editor). */
+export function listServices(params: ListParams = {}, client: GetClient = apiClient): Promise<Paginated<Service>> {
+  return client.get<Paginated<Service>>('/api/services/', params);
 }
 
 export function getService(id: number): Promise<Service> {

@@ -245,6 +245,17 @@ export const apiClient = {
 };
 
 /**
+ * Shape shared by `apiClient` (same-origin, used everywhere by default) and
+ * `lib/publicClient.ts`'s `publicClient` (the backend's real origin, for the
+ * public site's anonymous-safe reads). A read function that takes this as an
+ * optional parameter works unchanged for both callers — see
+ * `getGeneralInformation` for the pattern.
+ */
+export type GetClient = {
+  get<T>(path: string, query?: RequestOptions["query"]): Promise<T>;
+};
+
+/**
  * Builds multipart FormData for the endpoints that require it (every
  * endpoint with a file field). `string[]` values (Services' problems/
  * procedures) are JSON-encoded — DRF's JSONField accepts a JSON-encoded

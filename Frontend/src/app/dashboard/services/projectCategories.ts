@@ -1,8 +1,12 @@
-import { apiClient } from './client';
+import { apiClient, type GetClient } from './client';
 import type { ListParams, Paginated, ProjectCategory, ProjectCategoryInput } from '../types';
 
-export function listProjectCategories(params: ListParams = {}): Promise<Paginated<ProjectCategory>> {
-  return apiClient.get<Paginated<ProjectCategory>>('/api/project-categories/', params);
+/** Optional `client` — see `getGeneralInformation` for why (public site vs. Dashboard editor). */
+export function listProjectCategories(
+  params: ListParams = {},
+  client: GetClient = apiClient,
+): Promise<Paginated<ProjectCategory>> {
+  return client.get<Paginated<ProjectCategory>>('/api/project-categories/', params);
 }
 
 export function getProjectCategory(id: string): Promise<ProjectCategory> {

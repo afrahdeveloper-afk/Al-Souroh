@@ -7,6 +7,7 @@ import { BeforeAfterSlider } from '../components/BeforeAfterSlider';
 import { Eyebrow, FadeUp, MaskReveal } from '../components/primitives';
 import { listProjects } from '../dashboard/services/projects';
 import { listProjectCategories } from '../dashboard/services/projectCategories';
+import { publicClient } from '../lib/publicClient';
 import type { Project, ProjectCategory } from '../dashboard/types';
 import { useApiResource, fetchAllPages } from '../lib/publicApi';
 import { mediaUrl, usePageHeroImage } from '../lib/siteContent';
@@ -138,10 +139,10 @@ export function ProjectsPage() {
   const heroImage = usePageHeroImage('projects');
 
   const { data: projects, loading: projectsLoading, error: projectsError } = useApiResource(
-    () => fetchAllPages<Project>((page) => listProjects({ page })), []
+    () => fetchAllPages<Project>((page) => listProjects({ page }, publicClient)), []
   );
   const { data: categories } = useApiResource(
-    () => fetchAllPages<ProjectCategory>((page) => listProjectCategories({ page })), []
+    () => fetchAllPages<ProjectCategory>((page) => listProjectCategories({ page }, publicClient)), []
   );
 
   const filters = [

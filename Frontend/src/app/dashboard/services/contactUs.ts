@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { apiClient, type GetClient } from './client';
 import { ApiError, type ContactUs, type ContactUsInput } from '../types';
 
 /**
@@ -6,10 +6,13 @@ import { ApiError, type ContactUs, type ContactUsInput } from '../types';
  * `getContactUs` returns `null` on a 404 so callers can tell "no record yet"
  * apart from a real failure and decide whether to POST (create) or
  * PATCH (update) on save.
+ *
+ * Optional `client` — see `getGeneralInformation` for why (public site vs.
+ * Dashboard editor).
  */
-export async function getContactUs(): Promise<ContactUs | null> {
+export async function getContactUs(client: GetClient = apiClient): Promise<ContactUs | null> {
   try {
-    return await apiClient.get<ContactUs>('/api/contact-us/');
+    return await client.get<ContactUs>('/api/contact-us/');
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) return null;
     throw error;

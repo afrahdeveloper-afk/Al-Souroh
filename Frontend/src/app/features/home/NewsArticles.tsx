@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useLang } from '../../providers/LanguageProvider';
 import { listNews } from '../../dashboard/services/news';
+import { publicClient } from '../../lib/publicClient';
 import type { News } from '../../dashboard/types';
 import { useApiResource, fetchAllPages } from '../../lib/publicApi';
 import { mediaUrl } from '../../lib/siteContent';
@@ -9,7 +10,7 @@ import { Eyebrow } from '../../components/primitives';
 
 export function NewsArticles() {
   const { isAr, t } = useLang();
-  const { data: articles } = useApiResource(() => fetchAllPages<News>((page) => listNews({ page })), []);
+  const { data: articles } = useApiResource(() => fetchAllPages<News>((page) => listNews({ page }, publicClient)), []);
   const recent = (articles ?? []).filter((article) => !article.is_featured).slice(0, 3);
   const Arrow = isAr ? ArrowLeft : ArrowRight;
 

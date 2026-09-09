@@ -1,12 +1,14 @@
-import { apiClient, toFormData } from './client';
+import { apiClient, toFormData, type GetClient } from './client';
 import type { ListParams, News, NewsInput, Paginated } from '../types';
 
-export function listNews(params: ListParams = {}): Promise<Paginated<News>> {
-  return apiClient.get<Paginated<News>>('/api/news/', params);
+/** Optional `client` — see `getGeneralInformation` for why (public site vs. Dashboard editor). */
+export function listNews(params: ListParams = {}, client: GetClient = apiClient): Promise<Paginated<News>> {
+  return client.get<Paginated<News>>('/api/news/', params);
 }
 
-export function getNews(id: number): Promise<News> {
-  return apiClient.get<News>(`/api/news/${id}/`);
+/** Optional `client` — see `getGeneralInformation` for why (public site vs. Dashboard editor). */
+export function getNews(id: number, client: GetClient = apiClient): Promise<News> {
+  return client.get<News>(`/api/news/${id}/`);
 }
 
 export function createNews(input: Required<NewsInput>): Promise<News> {

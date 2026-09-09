@@ -1,4 +1,4 @@
-import { apiClient, toFormData, uploadFormData } from './client';
+import { apiClient, toFormData, uploadFormData, type GetClient } from './client';
 import {
   ApiError,
   STATIC_IMAGE_FIELDS,
@@ -40,9 +40,10 @@ const BASE = '/api/static-images';
  */
 export async function getStaticImages<K extends StaticImageGroupKey>(
   group: K,
+  client: GetClient = apiClient,
 ): Promise<StaticImageRecordMap[K] | null> {
   try {
-    const body = await apiClient.get<StaticImageRecordMap[K] | Record<string, never>>(
+    const body = await client.get<StaticImageRecordMap[K] | Record<string, never>>(
       `${BASE}/${group}/`,
     );
     if (!body || typeof (body as { id?: unknown }).id !== 'number') return null;

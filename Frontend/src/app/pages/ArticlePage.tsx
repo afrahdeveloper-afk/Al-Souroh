@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useLang } from '../providers/LanguageProvider';
 import { Eyebrow, FadeUp, MaskReveal } from '../components/primitives';
 import { getNews, listNews } from '../dashboard/services/news';
+import { publicClient } from '../lib/publicClient';
 import { useApiResource } from '../lib/publicApi';
 import { mediaUrl } from '../lib/siteContent';
 
@@ -33,8 +34,8 @@ function CornerFrame() {
 export function ArticlePage() {
   const { id } = useParams();
   const { isAr, t } = useLang();
-  const { data: article, loading, error } = useApiResource(() => getNews(Number(id)), [id]);
-  const { data: allArticles } = useApiResource(() => listNews(), []);
+  const { data: article, loading, error } = useApiResource(() => getNews(Number(id), publicClient), [id]);
+  const { data: allArticles } = useApiResource(() => listNews({}, publicClient), []);
   const BackArrow = isAr ? ArrowRight : ArrowLeft;
 
   if (loading) {

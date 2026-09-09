@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'news',
     'contact_us',
     'static_images',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -166,6 +167,33 @@ STORAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Most PaaS hosts (Render's free tier included) wipe local disk on every
+# deploy/restart — uploaded media would vanish. When USE_S3=True, uploads go
+# to an S3-compatible bucket instead (Backblaze B2, Cloudflare R2, AWS S3,
+# ...) and MEDIA_ROOT above is simply unused. Local dev keeps FileSystemStorage
+# by leaving USE_S3 unset.
+USE_S3 = env.bool('USE_S3', default=False)
+
+if USE_S3:
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default=None)
+    AWS_S3_ADDRESSING_STYLE = 'virtual'
+    # The bucket itself must be created as Public — B2's S3-compatible API
+    # doesn't reliably honor a per-object ACL header, so this is left unset
+    # rather than sent as 'public-read' on every upload.
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_ENDPOINT_URL.split('://', 1)[1]}"
+
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    }
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

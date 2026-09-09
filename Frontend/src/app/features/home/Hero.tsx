@@ -21,9 +21,13 @@ import { useContactUs } from "../../lib/siteContent";
    Every visible piece of content here — the vehicle image, both headline
    lines, the supporting copy, and the location line — is CMS-driven
    (GeneralInformation / ContactUs). There is deliberately no hardcoded
-   fallback copy or fallback image: when the backend has nothing yet, the
-   corresponding piece simply does not render, and the background stays the
-   section's own solid black rather than a stand-in photo. */
+   fallback copy: when the backend has nothing yet, headline/copy simply do
+   not render. The background image is the one exception — FALLBACK_HERO_IMAGE
+   (a local asset, public/hero-fallback.jpg) stands in for it until an admin
+   uploads GeneralInformation.hero_img in the Dashboard, so the section is
+   never left solid black. */
+
+const FALLBACK_HERO_IMAGE = "/hero-fallback.jpg";
 
 type Bilingual = { ar: string; en: string };
 
@@ -34,9 +38,9 @@ type HeroProps = {
   headlinePrimary?: Bilingual;
   headlineSecondary?: Bilingual;
   supportingCopy?: Bilingual;
-  /** Real backend-hosted image URL (GeneralInformation.hero_img). The only
-   *  source for this image — when absent, no image renders at all and the
-   *  section is solid black. */
+  /** Real backend-hosted image URL (GeneralInformation.hero_img). Falls
+   *  back to FALLBACK_HERO_IMAGE (a local asset) when absent, so the
+   *  section always shows a photo instead of solid black. */
   backgroundImageUrl?: string;
 };
 
@@ -48,6 +52,7 @@ export function Hero({
 }: HeroProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { t, isAr } = useLang();
+  const heroImageUrl = backgroundImageUrl ?? FALLBACK_HERO_IMAGE;
   const reducedMotion = useReducedMotion();
   const scrollAnimRef = useRef<number | null>(null);
   const contact = useContactUs();
@@ -223,41 +228,38 @@ export function Hero({
       className="relative h-[160vh] bg-[#060708]"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden cinematic-grain vignette">
-        {/* The CMS-provided hero image — the only image this section ever shows.
-            With no backgroundImageUrl, nothing renders here and the section
-            stays the section's own solid black background. */}
-        {backgroundImageUrl && (
+        {/* The CMS-provided hero image, or FALLBACK_HERO_IMAGE until an
+            admin uploads one in the Dashboard — never solid black. */}
+        <motion.div
+          className="absolute inset-0"
+          style={{ scale: carScale, y: carY, x: carX, rotate: carTilt }}
+          initial={{ opacity: 0, y: 60 }}
+          animate={ready ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <img
+            src={heroImageUrl}
+            alt=""
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            className="h-full w-full object-cover"
+            style={{
+              filter: "brightness(0.6) contrast(1.14)",
+              objectPosition: "center 42%",
+            }}
+          />
+          {/* Independent moving reflection over the image */}
           <motion.div
-            className="absolute inset-0"
-            style={{ scale: carScale, y: carY, x: carX, rotate: carTilt }}
-            initial={{ opacity: 0, y: 60 }}
-            animate={ready ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <img
-              src={backgroundImageUrl}
-              alt=""
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-              className="h-full w-full object-cover"
-              style={{
-                filter: "brightness(0.6) contrast(1.14)",
-                objectPosition: "center 42%",
-              }}
-            />
-            {/* Independent moving reflection over the image */}
-            <motion.div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.10) 50%, transparent 60%)",
-                backgroundSize: "200% 100%",
-                backgroundPositionX: glareX,
-              }}
-            />
-          </motion.div>
-        )}
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.10) 50%, transparent 60%)",
+              backgroundSize: "200% 100%",
+              backgroundPositionX: glareX,
+            }}
+          />
+        </motion.div>
 
         {/* Atmospheric ceiling light pools */}
         <div

@@ -1,0 +1,320 @@
+/* =============================================================================
+ * Al-Sorouh Admin Dashboard — Design System (tokens only)
+ * =============================================================================
+ *
+ * Source: src/app/dashboard/docs/figma-spec.md §4 (design tokens) and
+ * figma-vs-project-mapping.md Phase 1. Figma file `QXCY0KAZnk0AgtxRaxFzEJ`.
+ *
+ * Scope: THIS FILE DEFINES TOKENS ONLY. No components are built or retinted
+ * here (that is Phase 2 of the mapping doc's plan) and no pages exist yet.
+ *
+ * Isolation: every color/shadow token is declared under the `[data-app=
+ * "dashboard"]` selector that `DashboardLayout.tsx` already sets on its root
+ * div, then re-exposed to Tailwind via `@theme inline` (which resolves the
+ * `var()` at the point of use, not at build time). A `bg-dashboard-*` class
+ * used outside `/dashboard` therefore resolves to nothing — it cannot bleed
+ * into the portfolio's `--sorouh-*` system, and the portfolio cannot bleed
+ * into the Dashboard. This mirrors the exact pattern `theme.css` already uses
+ * for the generic shadcn tokens (`:root { --background: ... }` +
+ * `@theme inline { --color-background: var(--background); }`), scoped down
+ * to one subtree instead of the whole document.
+ *
+ * Deliberately NOT part of this token layer (per the Figma spec's own
+ * findings, carried over unchanged):
+ *   - Italic type. Every "Italic"-named Figma text style renders upright in
+ *     the actual screenshots (spec §1.2) — a mislabeled style, not a real
+ *     treatment. `globals.css`'s sitewide `* { font-style: normal;
+ *     font-synthesis: none; }` already enforces this inside the Dashboard
+ *     too; nothing here needs to repeat it.
+ *   - New font files. Arabic/English reuse the portfolio's own
+ *     `--font-arabic` (Lama Sans) / `--font-english` (Lucida Sans) from
+ *     `globals.css` — Protocol 1, and confirmed by the spec as the actual
+ *     rendered families regardless of what some Figma token names claim.
+ *     Times New Roman (used in Figma only for one login-button arrow glyph)
+ *     is explicitly not adopted — spec calls it "not a real typographic
+ *     choice"; build that arrow from the existing type or an icon instead.
+ *   - A new icon library. `lucide-react` is already a project dependency
+ *     used throughout the portfolio and covers the Dashboard's icon needs
+ *     (mapping doc §4/Phase 6). Only the sizes actually drawn in Figma are
+ *     tokenized below, as `--dashboard-icon-size-*`.
+ *
+ * Values are sourced three ways, and every group below says which:
+ *   (A) EXACT — a concrete number/hex given directly in figma-spec.md.
+ *   (B) SYSTEMATIC — a plain 4px-based scale for generic layout spacing the
+ *       Figma pull does not itemize (there is no such thing as a spacing
+ *       scale in a static design file, only the gaps that happen to appear).
+ *   (C) DERIVED, undesigned states — success/warning have no Figma design at
+ *       all (spec §7: only destructive red exists). Rather than pick
+ *       arbitrary hexes, they are hue-rotated from the one destructive red
+ *       Figma does specify, holding saturation and lightness constant, so
+ *       all four semantic fills read as one deliberate family instead of
+ *       three unrelated guesses. The exact rotation is shown in-line.
+ * ========================================================================= */
+
+/* -----------------------------------------------------------------------
+ * 1–2. COLOR + EFFECT PRIMITIVES (scoped, feed the @theme inline block below)
+ * ---------------------------------------------------------------------- */
+[data-app="dashboard"] {
+  /* Background / Surface — darkest to lightest (EXACT, spec §4.1) */
+  --dashboard-bg: #060708;              /* azure/3 "Woodsmoke" — page background */
+  --dashboard-surface-alt: #080a0d;     /* azure/4 — secondary near-black */
+  --dashboard-surface-header: #0a0c0f;  /* azure/5 — header/section gradient step */
+  --dashboard-surface-sunken: #0c0f13;  /* azure/6 "Bunker" — input/textarea/dropzone fill */
+  --dashboard-surface-footer: #0b0e12;  /* azure/6-3 — modal footer bar */
+  --dashboard-surface: #101318;         /* azure/8 "Bunker" — card/panel/section/modal (most common) */
+  --dashboard-surface-raised: #15181d;  /* azure/10-2 — delete dialog + aside sidebar, lightest dark surface */
+  --dashboard-scrim: rgba(2, 3, 5, 0.76); /* azure/1 @ 76% — modal/dialog backdrop */
+
+  /* Foreground text (EXACT, spec §4.1's consolidated grey list, reduced to
+     the roles actually needed rather than all ~20 named greys) */
+  --dashboard-foreground: #f2f0ea;           /* Pampas — headings/emphasis */
+  --dashboard-foreground-secondary: #d5d3cc; /* Timberwolf — labels/timestamps */
+  --dashboard-muted-foreground: #a8abb0;     /* Aluminium — body/description text; ~identical to the portfolio's own --sorouh-steel (8.89:1 on this same #060708 ground), so this reads as real body text, not decoration */
+  --dashboard-faint-foreground: #878b91;     /* table headers/meta */
+  --dashboard-placeholder-foreground: #62676e; /* Shuttle Gray — input placeholder/dim value */
+
+  /* Primary / Accent / Secondary — three distinct bronzes (EXACT, spec §4.1
+     explicitly warns: keep separate, never collapse into one "brand color") */
+  --dashboard-primary: #b69a63;          /* "Teak" — default button fill, borders, active states */
+  --dashboard-primary-hover: #c0a46c;    /* "Twine" — hover state of bronze buttons, dashed dropzone border */
+  --dashboard-primary-foreground: #151515; /* "Cod Gray" — dark text on bronze buttons */
+  --dashboard-accent: #a49470;           /* "Donkey Brown" — third, muted bronze; wordmark / subtle emphasis, not a CTA color */
+  --dashboard-secondary: #15181d;        /* reuses azure/10-2 — secondary/ghost button fill */
+  --dashboard-secondary-foreground: #d1d1ce; /* "Quill Gray" — secondary/ghost button text, named as such in spec §4.1 */
+
+  /* Border — hairline, white-alpha only, escalating with emphasis (EXACT) */
+  --dashboard-border-subtle: rgba(255, 255, 255, 0.06);
+  --dashboard-border: rgba(255, 255, 255, 0.10);
+  --dashboard-border-strong: rgba(255, 255, 255, 0.14);
+  --dashboard-border-emphasis: rgba(255, 255, 255, 0.20); /* modal/dialog borders — highest emphasis */
+  --dashboard-border-dashed: rgba(192, 164, 108, 0.48);   /* bronze @ 48% — upload dropzone dashed border */
+
+  /* Muted (background fill for de-emphasized/disabled controls) — aliases
+     the sunken surface rather than inventing a third near-identical dark
+     tone; the *foreground* muted role above is what carries the readable
+     grey. */
+  --dashboard-muted: var(--dashboard-surface-sunken);
+
+  /* Semantic state fills. Error is EXACT (spec §4.1). Warning/Success are
+     DERIVED (C): Error's #9b514f is HSL(2°, 32%, 46%); Warning and Success
+     hold that same 32% saturation / 46% lightness and rotate hue to ~42°
+     (amber) and ~145° (green) respectively — a deliberate family, not a
+     guess. All three share primary's dark-text convention since they sit at
+     comparable mid lightness (~46%), same reasoning the spec gives for
+     Cod-Gray-on-bronze. */
+  --dashboard-error: #9b514f;       /* "Copper Rust" — delete/destructive fill */
+  --dashboard-error-icon: #dc8682;  /* "New York Pink" — delete-warning icon */
+  --dashboard-error-foreground: #151515;
+  --dashboard-warning: #9b8450;
+  --dashboard-warning-foreground: #151515;
+  --dashboard-success: #509b6f;
+  --dashboard-success-foreground: #151515;
+
+  /* Effects (EXACT where the spec gives a number; otherwise a restrained,
+     palette-derived elevation kept to the two scoped exceptions the spec
+     names in §4.3 — Login's glass card and modal dialogs — never spread
+     beyond that, per Protocol 4's spirit). */
+  --dashboard-blur-scrim: 4px;      /* modal/dialog backdrop blur, spec §4.3 */
+  --dashboard-blur-glass: 21.35px;  /* Login card backdrop-filter, spec §3.3 */
+  --dashboard-border-glass-width: 1.1px; /* Login card border, spec §3.3 — kept
+    as a separate width token (not a combined "1.1px solid #b69a63" shorthand)
+    because Tailwind's border-[...] color utility only accepts a color value;
+    the color itself is var(--dashboard-primary) below, already identical to
+    the spec's #b69a63. */
+  --dashboard-shadow-modal: 0 24px 64px -12px rgba(2, 3, 5, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --dashboard-shadow-glow: 0 0 64px 8px rgba(182, 154, 99, 0.22); /* Login card / logo-badge ambient bronze glow */
+  --dashboard-gradient-header: linear-gradient(180deg, var(--dashboard-bg) 0%, var(--dashboard-surface-header) 100%);
+
+  /* -----------------------------------------------------------------------
+   * Component dimensions (EXACT, spec §4.3) — used directly via var(), not
+   * routed through Tailwind's spacing scale, since these are specific
+   * control footprints rather than general-purpose layout spacing.
+   * -------------------------------------------------------------------- */
+  --dashboard-control-height-input: 44px;
+  --dashboard-control-height-button: 38px;
+  --dashboard-control-padding-button-block: 6px;
+  --dashboard-control-padding-button-inline: 14.8px;
+  --dashboard-control-padding-input-block: 13px;
+  --dashboard-control-padding-input-inline: 12.8px;
+  --dashboard-row-height-table: 71px;
+  --dashboard-row-height-table-header: 45px;
+  --dashboard-row-height-toolbar: 48px; /* spec gives 45–54px; 48px is the midpoint, not a separate Figma fact */
+  --dashboard-row-height-nav: 72px;     /* CMS-screen top nav bar container height, confirmed via get_metadata on 12:2964 */
+  --dashboard-hit-target-icon: 32px;    /* row-action (trash/pencil) icon-button hit target, spec gives 30–32px */
+  --dashboard-grid-gap-home: 14px;      /* Home's 5-tile CMS grid gap, spec §6.1 */
+
+  /* Container (EXACT, spec §3.1/§4.3) */
+  --dashboard-content-width: 1280px;
+  --dashboard-content-width-comfortable: 1400px;
+  --dashboard-content-inset-comfortable: 124px; /* Home hub's documented exact margin */
+  --dashboard-content-inset-compact: 64px;      /* lower end of the documented 64–124px inset range */
+
+  /* Icon sizes actually drawn in Figma (EXACT) */
+  --dashboard-icon-size-sm: 16px;  /* table row-action glyphs (trash/pencil) */
+  --dashboard-icon-size-md: 17px;  /* Home header "go to website" arrow */
+  --dashboard-icon-size-lg: 20px;  /* Homepage/Contact editor "section marker" — asset unresolved, spec §8 #17 */
+  --dashboard-icon-size-xl: 34px;  /* Home 5-tile nav icon badge */
+
+  /* Page H1 font — Lama Sans Expanded (registered in fonts.css), per the
+     type-scale comment below ("Lama Sans SemiBold Expanded 600") and a
+     direct client request: ONLY each page's own big H1 title uses the
+     Expanded width — nowhere else on the site or Dashboard. */
+  --dashboard-font-h1: 'Lama Sans Expanded', var(--font-arabic);
+}
+
+/* -----------------------------------------------------------------------
+ * Tailwind utilities for the color/effect tokens above. `@theme inline`
+ * keeps the `var()` indirection (resolved per-element at render time)
+ * instead of inlining a literal value at build time — that indirection is
+ * exactly what makes the [data-app="dashboard"] scoping above actually
+ * hold: a `bg-dashboard-surface` class rendered outside that subtree
+ * resolves to an unset custom property, i.e. no background, not a leaked
+ * portfolio-breaking color.
+ * ---------------------------------------------------------------------- */
+@theme inline {
+  --color-dashboard-bg: var(--dashboard-bg);
+  --color-dashboard-surface-alt: var(--dashboard-surface-alt);
+  --color-dashboard-surface-header: var(--dashboard-surface-header);
+  --color-dashboard-surface-sunken: var(--dashboard-surface-sunken);
+  --color-dashboard-surface-footer: var(--dashboard-surface-footer);
+  --color-dashboard-surface: var(--dashboard-surface);
+  --color-dashboard-surface-raised: var(--dashboard-surface-raised);
+  --color-dashboard-scrim: var(--dashboard-scrim);
+
+  --color-dashboard-foreground: var(--dashboard-foreground);
+  --color-dashboard-foreground-secondary: var(--dashboard-foreground-secondary);
+  --color-dashboard-muted: var(--dashboard-muted);
+  --color-dashboard-muted-foreground: var(--dashboard-muted-foreground);
+  --color-dashboard-faint-foreground: var(--dashboard-faint-foreground);
+  --color-dashboard-placeholder-foreground: var(--dashboard-placeholder-foreground);
+
+  --color-dashboard-primary: var(--dashboard-primary);
+  --color-dashboard-primary-hover: var(--dashboard-primary-hover);
+  --color-dashboard-primary-foreground: var(--dashboard-primary-foreground);
+  --color-dashboard-accent: var(--dashboard-accent);
+  --color-dashboard-secondary: var(--dashboard-secondary);
+  --color-dashboard-secondary-foreground: var(--dashboard-secondary-foreground);
+
+  --color-dashboard-border-subtle: var(--dashboard-border-subtle);
+  --color-dashboard-border: var(--dashboard-border);
+  --color-dashboard-border-strong: var(--dashboard-border-strong);
+  --color-dashboard-border-emphasis: var(--dashboard-border-emphasis);
+  --color-dashboard-border-dashed: var(--dashboard-border-dashed);
+
+  --color-dashboard-error: var(--dashboard-error);
+  --color-dashboard-error-icon: var(--dashboard-error-icon);
+  --color-dashboard-error-foreground: var(--dashboard-error-foreground);
+  --color-dashboard-warning: var(--dashboard-warning);
+  --color-dashboard-warning-foreground: var(--dashboard-warning-foreground);
+  --color-dashboard-success: var(--dashboard-success);
+  --color-dashboard-success-foreground: var(--dashboard-success-foreground);
+
+  --shadow-dashboard-modal: var(--dashboard-shadow-modal);
+  --shadow-dashboard-glow: var(--dashboard-shadow-glow);
+}
+
+/* -----------------------------------------------------------------------
+ * 2 (cont'd). TYPOGRAPHY — Tailwind text-size/line-height/tracking/weight
+ * scale. Static values (no color, safe to leave unscoped/global — a
+ * `text-dashboard-h1` class carries no portfolio-breaking visual identity
+ * if it were ever misapplied outside /dashboard, unlike a color token).
+ * EXACT per spec §4.2's type-scale table unless noted; ranges in the
+ * source table are kept as separate min/max tokens rather than averaged
+ * into an unsourced midpoint (see file header, methodology B vs guessing).
+ * ---------------------------------------------------------------------- */
+@theme {
+  --text-dashboard-h1: 27px;                 /* Page H1 — Lama Sans SemiBold Expanded 600 */
+  --text-dashboard-h1--line-height: 40.5px;
+  --text-dashboard-h2: 18.5px;                /* Modal/section H2 — Lama Sans Medium/SemiBold */
+  --text-dashboard-h2--line-height: 27.8px;
+  --text-dashboard-h3: 19px;                  /* Dialog H3 — Lama Sans Medium */
+  --text-dashboard-h3--line-height: 28.5px;
+  --text-dashboard-confirm-heading: 28px;     /* Confirm-Save/Delete modal heading */
+  --text-dashboard-confirm-heading--line-height: 42.5px;
+  --text-dashboard-card-title: 18px;          /* Home tile title — Lama Sans SemiBold */
+  --text-dashboard-card-title--line-height: 24.3px;
+
+  --text-dashboard-table-header: 11px;        /* Table header cell — Lama Sans Regular */
+  --text-dashboard-table-header--line-height: 16.5px;
+  --text-dashboard-table-body: 13px;          /* Table body (AR) — Lama Sans Regular/Medium */
+  --text-dashboard-table-body--line-height: 19.5px;
+  --text-dashboard-table-subtitle: 10px;      /* Table body (EN subtitle) — Lucida Sans Regular */
+  --text-dashboard-table-subtitle--letter-spacing: 0.4px;
+
+  --text-dashboard-label-en: 11.2px;          /* Form field label (EN) — Lucida Sans Regular */
+  --text-dashboard-label-ar: 13px;            /* Form field label (AR) — Lama Sans Medium */
+  --text-dashboard-input: 13px;               /* Input/placeholder value */
+
+  --text-dashboard-button-sm: 14.5px;         /* Button label — bumped from the spec's 12px (client feedback: buttons read too small) */
+  --text-dashboard-button-lg: 17.6px;         /* Button label, large CTA (e.g. Login submit) */
+
+  --text-dashboard-eyebrow-sm: 8.6px;         /* English eyebrow/kicker, lower bound */
+  --text-dashboard-eyebrow-sm--letter-spacing: 1.12px;
+  --text-dashboard-eyebrow-lg: 13px;          /* English eyebrow/kicker, upper bound */
+  --text-dashboard-eyebrow-lg--letter-spacing: 1.5px;
+
+  --text-dashboard-pagination: 12px;
+  --text-dashboard-pagination--line-height: 18px;
+
+  --tracking-dashboard-wordmark: 1.5px;       /* Home header "AL-SOROUH DASHBOARD" wordmark */
+
+  --font-weight-dashboard-regular: 400;
+  --font-weight-dashboard-medium: 500;
+  --font-weight-dashboard-semibold: 600;
+
+  /* -----------------------------------------------------------------------
+   * 3. SPACING — systematic 4px-based scale (B) for generic layout rhythm
+   * the static Figma file has no equivalent for. Component-specific
+   * dimensions that ARE named exactly in the spec (control heights, row
+   * heights, grid gap, content inset) live as plain custom properties in
+   * the scoped [data-app="dashboard"] block above instead of being forced
+   * into this scale — 44px/71px/124px are real Figma facts, not scale
+   * steps, and bending the scale to fit them would misrepresent both.
+   * -------------------------------------------------------------------- */
+  --spacing-dashboard-1: 4px;
+  --spacing-dashboard-2: 8px;
+  --spacing-dashboard-3: 12px;
+  --spacing-dashboard-4: 16px;
+  --spacing-dashboard-5: 20px;
+  --spacing-dashboard-6: 24px;
+  --spacing-dashboard-8: 32px;
+  --spacing-dashboard-10: 40px;
+  --spacing-dashboard-12: 48px;
+  --spacing-dashboard-14: 56px;
+  --spacing-dashboard-16: 64px;
+  --spacing-dashboard-20: 80px;
+  --spacing-dashboard-24: 96px;
+
+  /* -----------------------------------------------------------------------
+   * 4. BORDER RADIUS — EXACT (spec §4.3): zero radius everywhere, with
+   * exactly one deliberate exception (Login's circular ambient-glow shape).
+   * sm/md/lg are kept as distinct tokens (not one flat "no radius" rule)
+   * so a future, deliberate departure from zero-radius has one place to
+   * change rather than a sitewide find-and-replace.
+   * -------------------------------------------------------------------- */
+  --radius-dashboard-sm: 0px;
+  --radius-dashboard-md: 0px;
+  --radius-dashboard-lg: 0px;
+  --radius-dashboard-full: 9999px;
+
+  /* -----------------------------------------------------------------------
+   * 6. BREAKPOINTS / CONTAINER — the Figma file has zero mobile/tablet
+   * frames (spec §2/§7); every screen is a fixed 1280–1536px desktop
+   * width. These two values are therefore the only breakpoint facts the
+   * design actually contains. No sub-1280 breakpoint is invented here —
+   * the project's existing Tailwind default scale (sm/md/lg/xl/2xl,
+   * already relied on sitewide) stays the fallback below desktop until a
+   * responsive pass is explicitly scoped (spec open question #16).
+   * -------------------------------------------------------------------- */
+  --breakpoint-dashboard-desktop: 1280px;    /* smallest confirmed Figma frame width */
+  --breakpoint-dashboard-desktop-lg: 1536px; /* largest confirmed Figma frame width */
+
+  /* -----------------------------------------------------------------------
+   * 7. CONTAINER SYSTEM — page container / content width (EXACT, spec
+   * §3.1/§4.3). Section spacing and horizontal padding reuse the spacing
+   * scale above (--spacing-dashboard-*) plus --dashboard-content-inset-*
+   * rather than inventing a third, parallel spacing vocabulary.
+   * -------------------------------------------------------------------- */
+  --container-dashboard-content: 1280px;
+  --container-dashboard-comfortable: 1400px;
+}

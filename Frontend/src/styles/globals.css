@@ -1,0 +1,223 @@
+/* ===== Al-Sorouh cinematic homepage globals ===== */
+
+:root {
+  --font-arabic: "Lama Sans", "Lama_Sans", "Noto Sans Arabic", Tahoma, sans-serif;
+  --font-english: "Lucida Sans", "Lucida Sans Unicode", Arial, sans-serif;
+  /* Registered in fonts.css from public/fonts; reserved for technical/data labels. */
+  --font-typewriter: "Lucida Sans Typewriter", "Lucida Console", ui-monospace, monospace;
+  --font-display: var(--font-arabic);
+  --font-body: var(--font-arabic);
+  --font-mono: var(--font-english);
+}
+
+html[dir='ltr'] {
+  --font-display: var(--font-english);
+  --font-body: var(--font-english);
+}
+
+/* PROTOCOL 5 (contrast). Measured against the #060708 ground:
+     --sorouh-ivory  #EDE9E0  16.64:1   body and display copy
+     --sorouh-steel  #A7ADB2   8.89:1   small labels, captions, metadata
+     --sorouh-bronze #a49470   6.77:1   accents and active state
+     --sorouh-muted  #6B7075   4.03:1   under the 4.5:1 floor — rules only, never text
+   Hairlines replace shadows for separation (PROTOCOL 4). */
+:root {
+  --sorouh-line: rgba(237, 233, 224, 0.14);
+  --sorouh-line-strong: rgba(164, 148, 112, 0.42);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--sorouh-black);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--sorouh-black);
+  color: var(--sorouh-ivory);
+  overflow-x: hidden;
+}
+
+/* Arabic (RTL) content uses Lama Sans and must never be letter-spaced/stretched.
+   Higher specificity than the plain `body` rule so Arabic never falls back to a
+   Latin face. English technical labels opt back into Lucida via .font-mono-tech. */
+[dir='rtl'],
+html[dir='rtl'] body {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+[lang='ar'] { font-family: var(--font-arabic); }
+[lang='en'] { font-family: var(--font-english); }
+
+html[dir='ltr'] body,
+html[dir='ltr'] .font-display,
+html[dir='ltr'] .font-body {
+  font-family: var(--font-body);
+}
+
+/* Locale-aware copy alignment. Technical labels retain their Lucida treatment. */
+html[dir='ltr'] .locale-copy,
+html[dir='ltr'] .text-right {
+  text-align: left;
+}
+
+/* Never allow synthetic slanted or generated text faces. */
+* {
+  font-style: normal;
+  font-synthesis: none;
+}
+
+/* Font utilities */
+.font-display { font-family: var(--font-display); font-style: normal; }
+.font-body { font-family: var(--font-body); font-style: normal; }
+/* English technical labels use Lucida Sans (letter-spacing allowed on Latin). */
+.font-mono-tech { font-family: var(--font-english); font-style: normal; }
+
+/* PROTOCOL 3 (numbers): digits stay Latin/Western in both languages. Source must
+   author ASCII digits (0-9); this utility additionally locks the numeral form so
+   an Arabic face cannot substitute Arabic-Indic glyphs, and keeps figures aligned
+   and LTR-ordered inside RTL copy. Apply to any run that is mostly numeric. */
+.tabular-latin {
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+  unicode-bidi: isolate;
+}
+
+/* Hide scrollbars until scrolling (default hidden) */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Global scrollbar — thin, restrained */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(164, 148, 112, 0.28); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(164, 148, 112, 0.5); }
+
+/* Selection */
+::selection { background: rgba(164, 148, 112, 0.35); color: #EDE9E0; }
+
+/* One responsive safe grid for copy and controls. Full-bleed media remains untouched. */
+:root {
+  --page-gutter-desktop: clamp(56px, 5vw, 96px);
+  --page-gutter-tablet: clamp(32px, 4vw, 48px);
+  --page-gutter-mobile: 20px;
+  --page-gutter: var(--page-gutter-mobile);
+}
+
+/* Keep the approved RTL spacing intact while giving English a stronger safe grid. */
+html[dir='ltr'] {
+  --page-gutter-desktop: clamp(72px, 6vw, 120px);
+  --page-gutter-tablet: clamp(40px, 5vw, 56px);
+  --page-gutter-mobile: clamp(20px, 6vw, 24px);
+}
+@media (min-width: 768px) { :root { --page-gutter: var(--page-gutter-tablet); } }
+@media (min-width: 1280px) { :root { --page-gutter: var(--page-gutter-desktop); } }
+.page-gutter,
+.safe-inline { padding-inline: var(--page-gutter); }
+.safe-article > section { padding-inline: var(--page-gutter); }
+
+/* Hero copy + persistent header: a touch further from the edge than the
+   shared safe grid, for better horizontal balance on wide viewports. Kept
+   close to --page-gutter so the shift reads as a nudge, not a re-center. */
+.hero-gutter,
+.nav-gutter { padding-inline: calc(var(--page-gutter) + clamp(16px, 2.2vw, 40px)); }
+
+/* Route pages keep their existing structures while their content grids receive
+   the same breathing room at every breakpoint. */
+.max-w-\[1280px\].mx-auto.px-6 { padding-inline: var(--page-gutter); }
+@media (min-width: 768px) {
+  .safe-article > section.px-6,
+  .safe-article > section.md\:px-10,
+  .safe-article > section.lg\:px-16 { padding-inline: var(--page-gutter); }
+}
+
+/* English remains upright Lucida Sans without synthetic slant or weight. */
+html[dir='ltr'] .font-display,
+html[dir='ltr'] .font-mono-tech { font-style: normal; font-synthesis: none; }
+
+/* English hero composition: two restrained editorial lines, kept inside the
+   same safe grid as its supporting copy and controls. */
+html[dir='ltr'] .hero-title-primary { max-inline-size: 1100px; font-size: clamp(48px, 3.8vw, 64px) !important; line-height: 1.12 !important; }
+html[dir='ltr'] .hero-title-secondary { max-inline-size: 1100px; font-size: clamp(56px, 4.5vw, 76px) !important; line-height: 1.1 !important; }
+html[dir='ltr'] .hero-copy { max-width: 620px; font-size: 16px !important; line-height: 1.75 !important; }
+
+/* Compact the complete English type system without touching the approved RTL site. */
+html[dir='ltr'] .home-experience > section:not(:first-child) .font-display { zoom: 0.7; max-inline-size: 850px; }
+html[dir='ltr'] .home-experience > section:not(:first-child) .font-mono-tech { zoom: 0.76; }
+html[dir='ltr'] .inner-page .font-display { zoom: 0.7; max-inline-size: 850px; }
+html[dir='ltr'] .inner-page .font-mono-tech { zoom: 0.78; }
+html[dir='ltr'] footer .font-display { zoom: 0.7; max-inline-size: 850px; }
+
+html[dir='ltr'] .home-experience > section:not(:first-child) h1,
+html[dir='ltr'] .inner-page h1 { max-inline-size: 1100px; font-size: clamp(42px, 3.75vw, 64px) !important; line-height: 1.12 !important; }
+html[dir='ltr'] .home-experience > section:not(:first-child) h2,
+html[dir='ltr'] .inner-page h2 { max-inline-size: 850px; font-size: clamp(38px, 3.25vw, 56px) !important; line-height: 1.14 !important; }
+html[dir='ltr'] .home-experience > section:not(:first-child) h3,
+html[dir='ltr'] .inner-page h3 { max-inline-size: 850px; font-size: clamp(28px, 2.4vw, 42px) !important; line-height: 1.2 !important; }
+
+html[dir='ltr'] .home-experience > section:not(:first-child) p,
+html[dir='ltr'] .inner-page p,
+html[dir='ltr'] footer p { max-inline-size: 620px; font-size: clamp(16px, 1.1vw, 18px) !important; line-height: 1.75 !important; }
+
+/* ProcessFilm — its title/line were reported unreadably small in English
+   under the compact rules above (Arabic reads fine at its own, larger,
+   un-zoomed size). Selectors below repeat `.process-film-scene` once purely
+   to outrank the generic rules' specificity, not for any other reason. */
+html[dir='ltr'] .home-experience .process-film-scene.process-film-scene .font-display { zoom: 1; max-inline-size: none; }
+html[dir='ltr'] .home-experience .process-film-scene.process-film-scene h3 { max-inline-size: 640px; font-size: clamp(34px, 5vw, 80px) !important; line-height: 1.16 !important; }
+html[dir='ltr'] .home-experience .process-film-scene.process-film-scene p { max-inline-size: 640px; font-size: clamp(18px, 1.6vw, 23px) !important; line-height: 1.8 !important; }
+
+/* Finale — the tagline under the two headline lines was reported too small
+   in English (Arabic is fine, only eased down slightly in the component
+   itself). Same specificity-outranking trick as ProcessFilm above. */
+html[dir='ltr'] .home-experience .finale-scene.finale-scene .finale-tagline { max-inline-size: none; font-size: 24px !important; line-height: 1.6 !important; }
+
+html[dir='ltr'] .home-experience button,
+html[dir='ltr'] .inner-page button,
+html[dir='ltr'] footer button { font-size: 15px !important; line-height: 1.25 !important; }
+
+html[dir='ltr'] .home-experience input,
+html[dir='ltr'] .home-experience select,
+html[dir='ltr'] .home-experience textarea,
+html[dir='ltr'] .inner-page input,
+html[dir='ltr'] .inner-page select,
+html[dir='ltr'] .inner-page textarea { font-size: 16px !important; }
+
+/* Clear, restrained keyboard focus across the editorial experience. */
+:focus-visible { outline: 2px solid var(--sorouh-bronze); outline-offset: 4px; }
+
+/* RTL-aware transform origins */
+[dir="rtl"] .origin-right { transform-origin: right; }
+[dir="ltr"] .origin-left { transform-origin: left; }
+[dir="rtl"] .text-start { text-align: right; }
+[dir="ltr"] .text-start { text-align: left; }
+
+/* Typographic mask reveal helper: vertical breathing room prevents clipped Arabic dots. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.12em 0.16em;
+  margin-block: -0.12em -0.16em;
+}
+
+/* Grain / texture overlay for cinematic depth */
+.cinematic-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  z-index: 40;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Vignette utility */
+.vignette::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.72) 100%);
+}

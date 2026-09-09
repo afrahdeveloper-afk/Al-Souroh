@@ -1,0 +1,303 @@
+/* =============================================================================
+ * Al-Sorouh Admin Dashboard — Base component retint (Phase 2)
+ * =============================================================================
+ *
+ * Source: src/app/dashboard/docs/figma-vs-project-mapping.md Phase 2 + §1.1
+ * ("the entire shadcn/Radix components/ui/ library is currently unused... can
+ * be freely re-themed for the Dashboard with zero risk of visually affecting
+ * the public portfolio"). Tokens themselves live in `dashboard-theme.css`
+ * (Phase 1); this file is the retint layer that makes the *existing*,
+ * untouched `src/app/components/ui/*` primitives (Button, Input, Textarea,
+ * Select, Table, Dialog, AlertDialog, Card, Label, Sidebar, Badge, Separator,
+ * Skeleton, Sonner) render in the Dashboard's palette.
+ *
+ * Mechanism, in two layers — the same technique this file's own `.dark`
+ * class in theme.css already demonstrates, just scoped to one subtree
+ * instead of the whole document:
+ *
+ *  1. VARIABLE BRIDGE — every generic shadcn variable name that the
+ *     untouched component files already reference (`--primary`,
+ *     `--background`, `--border`, `--radius`, `--sidebar`, ...) is
+ *     re-declared under `[data-app="dashboard"]`, aliased to the real
+ *     `--dashboard-*` tokens. Because Tailwind v4's utility classes
+ *     (`bg-primary`, `rounded-md`, ...) always resolve through `var()`,
+ *     this alone re-themes the *majority* of every primitive — colors,
+ *     borders, and radius (including the `rounded-md`/`-lg`/`-xl` scale,
+ *     since those are themselves `calc(var(--radius) ± Npx)` in
+ *     `theme.css`'s own `@theme inline` block) — with ZERO edits to any
+ *     component's `.tsx`. A class like `bg-primary` used outside
+ *     `/dashboard` is unaffected (the alias only exists inside the scope),
+ *     and a `bg-dashboard-*` utility used outside `/dashboard` still
+ *     resolves to nothing, per `dashboard-theme.css`'s own isolation
+ *     guarantee.
+ *
+ *  2. TARGETED `[data-slot="…"]` OVERRIDES — every shadcn primitive in
+ *     this codebase already stamps a `data-slot` attribute on its root
+ *     (confirmed by reading every file this pass touches). That gives a
+ *     stable hook for the handful of things Figma specifies that are NOT
+ *     variable-driven: exact control heights/padding (buttons 38px,
+ *     inputs 44px, table rows 71px, …), the modal backdrop blur/scrim/
+ *     shadow (Dialog/AlertDialog hardcode `bg-black/50` + `shadow-lg`
+ *     today), and the bilingual EN/AR label-size split. A selector like
+ *     `[data-app="dashboard"] [data-slot="button"]` has specificity 0,2,0
+ *     — reliably higher than the single-class Tailwind utilities
+ *     (`.h-9`, `.shadow-lg`, 0,1,0) it needs to override — so these rules
+ *     win regardless of CSS source order, no `!important` required.
+ *
+ * Only two components needed an actual code change beyond this file,
+ * because the exact number they need has no existing prop to hang off of
+ * without inventing one: `button.tsx` gained `size="dashboard"` /
+ * `"dashboardIcon"` (it already had a `size` axis — this is one more
+ * value, not a new system) and `select.tsx`'s `SelectTrigger` gained a
+ * third `size` union member (`"dashboard"`, alongside its existing
+ * `"sm"`/`"default"`). `card.tsx` gained an opt-in `variant="glass"` for
+ * Login's one glass-morphism treatment (spec §3.3/§4.3's single named
+ * exception to the sitewide flat/hairline look).
+ * ========================================================================= */
+
+/* -----------------------------------------------------------------------
+ * 1. VARIABLE BRIDGE
+ * ---------------------------------------------------------------------- */
+[data-app="dashboard"] {
+  --background: var(--dashboard-bg);
+  --foreground: var(--dashboard-foreground);
+  --card: var(--dashboard-surface);
+  --card-foreground: var(--dashboard-foreground);
+  --popover: var(--dashboard-surface-raised);
+  --popover-foreground: var(--dashboard-foreground);
+  --primary: var(--dashboard-primary);
+  --primary-foreground: var(--dashboard-primary-foreground);
+  --secondary: var(--dashboard-secondary);
+  --secondary-foreground: var(--dashboard-secondary-foreground);
+  --muted: var(--dashboard-muted);
+  --muted-foreground: var(--dashboard-muted-foreground);
+  --accent: var(--dashboard-surface-raised);
+  --accent-foreground: var(--dashboard-foreground);
+  --destructive: var(--dashboard-error);
+  --destructive-foreground: var(--dashboard-error-foreground);
+  --border: var(--dashboard-border);
+  --input: var(--dashboard-border);
+  --input-background: var(--dashboard-surface-sunken); /* was a stray light #f3f3f5 at :root, never overridden for dark — see file header */
+  --ring: var(--dashboard-primary); /* focus rings read bronze, matching Figma's "focused-with-bronze-border" Input variant (spec §5, node 49:40834) */
+
+  /* Radius. theme.css derives --radius-sm/md/lg/xl from --radius via
+     calc(var(--radius) ± Npx); overriding only --radius here would make
+     --radius-sm compute calc(0px - 4px) = -4px, an out-of-range negative
+     radius that browsers happen to fall back to 0 for (invalid-at-
+     computed-value-time → initial value) — correct by accident, not by
+     design. Overriding the four derived tokens directly instead is
+     explicit and doesn't depend on that fallback behavior. */
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  --sidebar: var(--dashboard-surface-raised);
+  --sidebar-foreground: var(--dashboard-foreground);
+  --sidebar-primary: var(--dashboard-primary);
+  --sidebar-primary-foreground: var(--dashboard-primary-foreground);
+  --sidebar-accent: var(--dashboard-surface);
+  --sidebar-accent-foreground: var(--dashboard-foreground);
+  --sidebar-border: var(--dashboard-border);
+  --sidebar-ring: var(--dashboard-primary);
+
+  /* Base text/background for the whole subtree — mirrors how `body` in
+     globals.css establishes the portfolio's own ivory-on-black base, so
+     nothing inside /dashboard silently inherits the portfolio's
+     --sorouh-ivory instead of the Dashboard's own Pampas foreground. */
+  color: var(--dashboard-foreground);
+  background-color: var(--dashboard-bg);
+}
+
+/* -----------------------------------------------------------------------
+ * 2. TARGETED DIMENSION / EFFECT OVERRIDES
+ * ---------------------------------------------------------------------- */
+
+/* Button — exact 38px control height (spec §4.3). Only applies to the
+   `size="dashboard"`/`"dashboardIcon"` values added in button.tsx; the
+   portfolio's own Button usage elsewhere is untouched (different files,
+   different scope).
+   Font: always Lama Sans. The Dashboard is locked to Arabic-only (see
+   LanguageProvider's route-based `effectiveLang` override), so every button
+   label renders Arabic text — a previous conditional here tried to detect
+   that via a `[dir="rtl"]`/`[lang="ar"]` ancestor, but nothing in the
+   Dashboard subtree actually carries that attribute (it lives on `<html>`,
+   an ancestor of `[data-app="dashboard"]`, not a descendant of it), so the
+   condition never matched and every button silently fell back to Lucida
+   Sans. */
+[data-app="dashboard"] [data-slot="button"] {
+  font-family: var(--font-arabic);
+}
+
+/* Input / Textarea — 44px control height, dashboard padding + placeholder
+   color (spec §4.3). No variant prop existed to hang this off without
+   inventing one for a single number, so it's applied by scope instead. */
+[data-app="dashboard"] [data-slot="input"] {
+  height: var(--dashboard-control-height-input);
+  padding-block: var(--dashboard-control-padding-input-block);
+  padding-inline: var(--dashboard-control-padding-input-inline);
+  font-size: var(--text-dashboard-input);
+}
+[data-app="dashboard"] [data-slot="textarea"] {
+  padding-block: var(--dashboard-control-padding-input-block);
+  padding-inline: var(--dashboard-control-padding-input-inline);
+  font-size: var(--text-dashboard-input);
+}
+[data-app="dashboard"] [data-slot="input"]::placeholder,
+[data-app="dashboard"] [data-slot="textarea"]::placeholder {
+  color: var(--dashboard-placeholder-foreground);
+}
+
+/* Typed/selected field content follows its own `dir`, not the surrounding
+   Arabic chrome: Arabic-content fields (dir="rtl") read Lama Sans,
+   English-content fields (dir="ltr" — phone numbers, URLs, social handles,
+   English name/title pairs) read Lucida Sans. Most bilingual fields already
+   pair `dir` with an explicit `lang`, which globals.css's own [lang='ar']/
+   [lang='en'] rule already covers — this is the same rule keyed off `dir`
+   instead, since a handful of fields (e.g. ContactEditorPage's phone/
+   WhatsApp/social inputs, ProjectForm's EN/AR pairs) set dir without lang. */
+[data-app="dashboard"] [data-slot="input"][dir="ltr"],
+[data-app="dashboard"] [data-slot="textarea"][dir="ltr"] {
+  font-family: var(--font-english);
+}
+[data-app="dashboard"] [data-slot="input"][dir="rtl"],
+[data-app="dashboard"] [data-slot="textarea"][dir="rtl"] {
+  font-family: var(--font-arabic);
+}
+
+/* SearchInput's icon needs asymmetric start/end padding (clearance on the
+   icon side only). The general [data-slot="input"] rule above sets equal
+   padding-inline on both sides at specificity 0,2,0 — higher than the
+   `ps-9`/`pe-3` utility classes SearchInput.tsx passes as className, so
+   those were silently losing rather than overriding it. Nesting under the
+   component's own wrapper (already present, no new attribute needed)
+   raises this rule to 0,3,0, which reliably wins instead. */
+[data-app="dashboard"] [data-slot="dashboard-search-input"] [data-slot="input"] {
+  padding-inline-start: calc(var(--dashboard-control-padding-input-inline) + 1.25rem);
+  padding-inline-end: var(--dashboard-control-padding-input-inline);
+}
+
+/* Select trigger — dashboard's third size (see select.tsx) gets the same
+   44px control height as Input/Textarea for consistent form-row rhythm. */
+[data-app="dashboard"] [data-slot="select-trigger"][data-size="dashboard"] {
+  height: var(--dashboard-control-height-input);
+  font-size: var(--text-dashboard-input);
+}
+[data-app="dashboard"] [data-slot="select-content"] {
+  box-shadow: var(--dashboard-shadow-modal);
+}
+
+/* Table — 71px rows / 45px header (spec §4.3), hairline dividers instead
+   of the generic `border-b`, no zebra/hover tint beyond a subtle raise. */
+[data-app="dashboard"] [data-slot="table-head"] {
+  height: var(--dashboard-row-height-table-header);
+  font-size: var(--text-dashboard-table-header);
+  color: var(--dashboard-faint-foreground);
+  font-weight: var(--font-weight-dashboard-regular);
+}
+[data-app="dashboard"] [data-slot="table-row"] {
+  height: var(--dashboard-row-height-table);
+}
+[data-app="dashboard"] [data-slot="table-row"]:hover {
+  background-color: var(--dashboard-surface-sunken);
+}
+[data-app="dashboard"] [data-slot="table-cell"] {
+  font-size: var(--text-dashboard-table-body);
+}
+
+/* Label — always Lama Sans (spec §4.2's AR variant: 13px, Medium). The
+   Dashboard is Arabic-only chrome (see the Button rule above for why the
+   old [lang="ar"]/[dir="rtl"]-ancestor conditional never actually fired),
+   so every label defaults straight to the Arabic size/weight instead of
+   guessing an English default first. */
+[data-app="dashboard"] [data-slot="label"] {
+  color: var(--dashboard-foreground-secondary);
+  font-size: var(--text-dashboard-label-ar);
+  font-weight: var(--font-weight-dashboard-medium);
+  font-family: var(--font-arabic);
+}
+
+/* Dialog / AlertDialog — the scrim + blur + elevation Figma actually draws
+   for modals (spec §4.3), replacing the generic `bg-black/50` + `shadow-lg`.
+   Radius is already 0 via the --radius bridge above; this only adds what
+   the bridge cannot (blur is not a themeable shadcn variable at all). */
+[data-app="dashboard"] [data-slot="dialog-overlay"],
+[data-app="dashboard"] [data-slot="alert-dialog-overlay"] {
+  background-color: var(--dashboard-scrim);
+  backdrop-filter: blur(var(--dashboard-blur-scrim));
+}
+[data-app="dashboard"] [data-slot="dialog-content"],
+[data-app="dashboard"] [data-slot="alert-dialog-content"] {
+  box-shadow: var(--dashboard-shadow-modal);
+  border-color: var(--dashboard-border-emphasis);
+}
+
+/* Dialog / AlertDialog typography (spec §4.2: Dialog H3 19px covers both —
+   the Add/Edit modal's own "Modal/section H2" role sits at 18.5px, close
+   enough (0.5px, inside the spread the spec itself reports across passes)
+   that one consolidated rule is used for both rather than two near-
+   identical ones). Sizing here, not via className props, because these
+   attribute selectors (specificity 0,2,0) deterministically win over the
+   base components' own `text-lg`/`h-9` utility classes — passing a
+   conflicting custom-named utility class as a prop instead is NOT safe:
+   tailwind-merge only dedupes classes it recognizes by pattern (stock
+   Tailwind keywords or literal `[...]` arbitrary values), and a Tailwind
+   v4 @theme-key utility like `text-dashboard-h3` matches neither, so it
+   would sit alongside `text-lg` with an unpredictable winner. */
+[data-app="dashboard"] [data-slot="dialog-title"],
+[data-app="dashboard"] [data-slot="alert-dialog-title"] {
+  font-size: var(--text-dashboard-h3);
+  line-height: var(--text-dashboard-h3--line-height);
+  font-weight: var(--font-weight-dashboard-medium);
+}
+[data-app="dashboard"] [data-slot="dialog-description"],
+[data-app="dashboard"] [data-slot="alert-dialog-description"] {
+  font-size: var(--text-dashboard-table-body);
+  line-height: var(--text-dashboard-table-body--line-height);
+}
+
+/* AlertDialogAction/Cancel didn't carry a data-slot at all before this
+   pass (every other primitive in this codebase already does) — added two
+   attributes in alert-dialog.tsx to close that gap, then sized here at
+   the same 38px control height as every other dashboard button. */
+[data-app="dashboard"] [data-slot="alert-dialog-action"],
+[data-app="dashboard"] [data-slot="alert-dialog-cancel"] {
+  height: var(--dashboard-control-height-button);
+  padding-inline: var(--dashboard-control-padding-button-inline);
+  padding-block: var(--dashboard-control-padding-button-block);
+  font-size: var(--text-dashboard-button-sm);
+}
+
+/* Delete confirm + Confirm-Save share one centered, icon-led layout (spec
+   §5's shared "shield-check icon + title + body + Confirm/Cancel" shape).
+   `data-dialog-kind` is set only by DeleteConfirmDialog ("delete") and
+   ConfirmSaveDialog ("confirm") — every other Dialog/AlertDialog (e.g. a
+   future Add/Edit modal) keeps the base component's left-aligned header. */
+[data-app="dashboard"] [data-dialog-kind] [data-slot="alert-dialog-header"] {
+  align-items: center;
+  text-align: center;
+}
+[data-app="dashboard"] [data-dialog-kind] [data-slot="alert-dialog-footer"] {
+  justify-content: center;
+}
+[data-app="dashboard"] [data-dialog-kind] [data-slot="alert-dialog-title"] {
+  font-size: var(--text-dashboard-confirm-heading);
+  line-height: var(--text-dashboard-confirm-heading--line-height);
+}
+[data-app="dashboard"] [data-dialog-kind="delete"] [data-slot="alert-dialog-action"] {
+  background-color: var(--dashboard-error);
+  color: var(--dashboard-error-foreground);
+}
+[data-app="dashboard"] [data-dialog-kind="delete"] [data-slot="alert-dialog-action"]:hover {
+  background-color: color-mix(in srgb, var(--dashboard-error) 88%, black);
+}
+
+/* Sidebar — exact widths are not Figma-sourced (chrome shape is an open
+   question per spec §1.1); shadcn's own sensible defaults (16rem / 3rem
+   collapsed) are kept rather than inventing a number Figma never drew. */
+[data-app="dashboard"] [data-slot="sidebar-menu-button"][data-active="true"] {
+  background-color: var(--dashboard-surface);
+  color: var(--dashboard-primary);
+  border-inline-start: 2px solid var(--dashboard-primary);
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Al Sorouh</title>
+    <meta
+      name="description"
+      content="Delivers a premium Arabic RTL corporate website with seamless navigation, interactive forms, and responsive design tailored for professional business needs."
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Every photograph on this site is served by the CMS backend, from a
+         different origin than the app. Opening the connection (DNS + TCP +
+         TLS) alongside the app bundle instead of when the first <img> is
+         parsed removes a full round trip from the hero image's critical
+         path. The API calls themselves go through this deployment's own
+         origin (see dashboard/services/client.ts) — only the media files
+         come straight from the backend host. -->
+    <link rel="preconnect" href="https://apisorouh.trycvision.com" />
+    <link rel="dns-prefetch" href="https://apisorouh.trycvision.com" />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #root {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "case-study/before": {
+    "width": 1122,
+    "height": 1402,
+    "aspectRatio": 0.8003,
+    "widths": [
+      480,
+      768,
+      1024,
+      1122
+    ],
+    "sources": [
+      {
+        "type": "image/avif",
+        "srcset": [
+          {
+            "src": "/media/case-study/before-480w.avif",
+            "width": 480
+          },
+          {
+            "src": "/media/case-study/before-768w.avif",
+            "width": 768
+          },
+          {
+            "src": "/media/case-study/before-1024w.avif",
+            "width": 1024
+          },
+          {
+            "src": "/media/case-study/before-1122w.avif",
+            "width": 1122
+          }
+        ]
+      },
+      {
+        "type": "image/webp",
+        "srcset": [
+          {
+            "src": "/media/case-study/before-480w.webp",
+            "width": 480
+          },
+          {
+            "src": "/media/case-study/before-768w.webp",
+            "width": 768
+          },
+          {
+            "src": "/media/case-study/before-1024w.webp",
+            "width": 1024
+          },
+          {
+            "src": "/media/case-study/before-1122w.webp",
+            "width": 1122
+          }
+        ]
+      }
+    ],
+    "fallback": "/media/case-study/before-1122w.jpg"
+  },
+  "nav/contact": {
+    "width": 536,
+    "height": 720,
+    "aspectRatio": 0.7444,
+    "widths": [
+      480,
+      536
+    ],
+    "sources": [
+      {
+        "type": "image/avif",
+        "srcset": [
+          {
+            "src": "/media/nav/contact-480w.avif",
+            "width": 480
+          },
+          {
+            "src": "/media/nav/contact-536w.avif",
+            "width": 536
+          }
+        ]
+      },
+      {
+        "type": "image/webp",
+        "srcset": [
+          {
+            "src": "/media/nav/contact-480w.webp",
+            "width": 480
+          },
+          {
+            "src": "/media/nav/contact-536w.webp",
+            "width": 536
+          }
+        ]
+      }
+    ],
+    "fallback": "/media/nav/contact-536w.png"
+  }
+}

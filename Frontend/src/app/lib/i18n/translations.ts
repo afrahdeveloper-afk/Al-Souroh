@@ -1,0 +1,198 @@
+export type Locale = "ar" | "en";
+
+export const en: Record<string, string> = {
+  "ركن الصروح": "Al-Sorouh",
+  القائمة: "Menu",
+  إغلاق: "Close",
+  اذهب: "Go",
+  احجز: "Book",
+  اختر: "Select",
+  إرسال: "Send",
+  التالي: "Next",
+  السابق: "Previous",
+  آلاف: "Thousands",
+  "القيمة تُعرف من طريقة التعامل معها":
+    "Value is defined by how it is treated.",
+  "ركن الصروح — منذ 1989": "Al-Sorouh — Since 1989",
+  "نحن لا نعتبرها مجرد وسيلة نقل.": "We do not treat it as a vehicle.",
+  "بل نعتبرها قيمة.": "We treat it as value.",
+  "فحص، صيانة، حماية واستعادة للمركبات الفارهة، ضمن تجربة دقيقة وموثّقة تحافظ على قيمة مركبتك.":
+    "Diagnostics, maintenance, protection and restoration for premium vehicles—through a precise, documented experience that preserves their value.",
+  "احجز موعداً خاصاً": "Book a private appointment",
+  "اكتشف التجربة": "Discover the experience",
+  "بغداد — الكرادة، شارع 52": "Baghdad — Al-Karrada, Street 52",
+  "نشخّصها.": "We diagnose it.",
+  "نحميها.": "We protect it.",
+  "نستعيدها.": "We restore it.",
+  "ونعيد تعريف تفاصيلها.": "We refine every detail.",
+  "كل ذلك تحت": "All of it under one",
+  "سقف واحد.": "roof.",
+  "الخدمات — ستة مجالات": "Services — Six disciplines",
+  "منظومة عناية متكاملة": "A complete care system",
+  "خدماتنا تشمل المركبات التقليدية، الهجينة والكهربائية.":
+    "Our services cover conventional, hybrid and electric vehicles.",
+  "التشخيص والبرمجة": "Diagnostics & Programming",
+  "فحص الأعطال، قراءة الأنظمة الإلكترونية، برمجة المركبات، فحص المحرك والناقل والبطاريات.":
+    "Fault diagnosis, electronic-system reading, vehicle programming, and engine, transmission and battery inspection.",
+  "الصيانة الميكانيكية والكهربائية": "Mechanical & Electrical Maintenance",
+  "صيانة المحرك، أنظمة التبريد والتكييف، الدوائر الكهربائية والأنظمة الإلكترونية.":
+    "Engine maintenance, cooling and air-conditioning systems, electrical circuits and electronic systems.",
+  "الإطارات والتعليق": "Tyres & Suspension",
+  "تبديل الإطارات، الموازنة، الميزان، البطاريات وفحص أنظمة التعليق.":
+    "Tyre replacement, balancing, alignment, batteries and suspension inspection.",
+  "استعادة الهيكل والحوادث": "Body & Accident Restoration",
+  "إصلاحات البدي، معالجة أضرار الحوادث، تعديل الهيكل، الصبغ وإصلاح الانبعاجات بنظام PDR.":
+    "Body repairs, accident-damage treatment, chassis alignment, paintwork and PDR dent repair.",
+  "الحماية والعناية": "Protection & Care",
+  "أفلام الحماية PPF، التظليل، العوازل، التلميع والعناية الداخلية والخارجية.":
+    "PPF, tinting, insulation, polishing, and interior and exterior care.",
+  "التحديث والتخصيص": "Upgrades & Customisation",
+  "تطوير المظهر الخارجي، تحسين المقصورة، تركيب الإكسسوارات والتحديثات الفاخرة.":
+    "Exterior enhancement, cabin improvement, accessory installation and luxury upgrades.",
+  "هنا، لا مكان للتخمين.": "There is no room for guesswork here.",
+  "هنا، لا مكان": "Here, there is no room",
+  "للتخمين.": "for guesswork.",
+  "كل قرار يبدأ بفحص دقيق، وكل تنفيذ يمر بمراجعة واضحة قبل التسليم.":
+    "Every decision begins with a precise inspection, and every execution undergoes a clear review before handover.",
+  "أجهزة الفحص والبرمجة": "Diagnostic & programming equipment",
+  "قراءة الأعطال الإلكترونية": "Electronic fault reading",
+  "فحص المحرك والناقل": "Engine & transmission inspection",
+  "فحص وبرمجة البطاريات": "Battery inspection & programming",
+  "أجهزة التكييف والتبريد": "A/C & cooling equipment",
+  "أدوات المركبات الهجينة والكهربائية": "Hybrid & electric vehicle tools",
+  "موازنة الإطارات والميزان": "Tyre balancing & alignment",
+  "قياس سماكة الصبغ": "Paint-thickness measurement",
+  "معدات PDR وسحب وتعديل الهيكل": "PDR, pulling & body-alignment equipment",
+  "أجهزة التلميع الاحترافية": "Professional polishing equipment",
+  "تركيب PPF والتظليل": "PPF & tint installation",
+  "إضاءة فحص العيوب": "Defect-inspection lighting",
+  "التقنية هنا ليست لإكمال العمل فقط، بل لضمان خدمة أدق، أوضح وأكثر أماناً.":
+    "Technology here is not merely to complete the work; it ensures a more precise, clearer and safer service.",
+  الحكاية: "The story",
+  "خبرة من الماضي.": "Experience from the past.",
+  "برؤية تناسب مركبات اليوم.": "With a vision for today’s vehicles.",
+  "بدأت الخبرة عام 1989 من عالم قطع غيار مرسيدس-بنز، لتتطور اليوم إلى منظومة عراقية متكاملة للعناية بالمركبات وصيانتها واستعادتها.":
+    "Our experience began in 1989 with Mercedes-Benz parts and has evolved into an integrated Iraqi vehicle-care, maintenance and restoration system.",
+  "عاماً من الخبرة": "years of experience",
+  "المركبات الموثّقة": "documented vehicles",
+  "لماذا ركن الصروح؟": "Why Al-Sorouh?",
+  "ليست ورشة تقليدية.": "Not a conventional workshop.",
+  "بل منظومة متكاملة لمركبتك.": "A complete system for your vehicle.",
+  "نجمع الفحص، الصيانة، العناية، الإصلاح والمتابعة ضمن بيئة منظمة واحترافية، تحفظ وقت العميل وتمنحه تجربة مختلفة عن النمط التقليدي لخدمات المركبات.":
+    "We unite inspection, maintenance, care, repair and follow-up in an organised professional environment that respects your time and offers a better vehicle-service experience.",
+  "تشخيص واضح": "Clear diagnosis",
+  "تنفيذ منظّم": "Organised execution",
+  "متابعة مستمرة": "Continuous follow-up",
+  "رقابة قبل التسليم": "Inspection before handover",
+  الجودة: "Quality",
+  النظام: "Order",
+  الشفافية: "Transparency",
+  "احترام العميل": "Respect for the client",
+  "راحة العميل": "Client comfort",
+  "كوادر فنية وإدارية متخصصة": "Specialised technical & administrative teams",
+  "الجودة لا تنتهي عند التسليم.": "Quality does not end at handover.",
+  "ضمان يبدأ من 3 أشهر وقد يصل إلى 5 سنوات، بحسب نوع الخدمة أو القطعة والجهة المصنّعة.":
+    "Warranty starts at three months and may extend to five years, depending on the service, part and manufacturer.",
+  "تشخيص واضح قبل التنفيذ": "Clear diagnosis before execution",
+  "شرح تفاصيل العمل والموافقة عليها": "Work details explained and approved",
+  "قطع غيار من مصادر موثوقة": "Parts from trusted sources",
+  "توثيق مراحل الصيانة": "Documented maintenance stages",
+  "رقابة جودة قبل التسليم": "Quality control before handover",
+  "متابعة بعد انتهاء الخدمة": "Follow-up after service completion",
+  "هدفنا ليس إنجاز الخدمة فقط، بل الحفاظ على ثقة العميل وقيمة مركبته.":
+    "Our goal is not only to complete the service, but to protect the client’s confidence and vehicle value.",
+  "جودة تبدأ من المصدر.": "Quality starts at the source.",
+  "تعتمد ركن الصروح على علاقات تعاون مع شركات ومورّدين متخصصين من ألمانيا وإيطاليا والصين، لتوفير قطع ذات جودة موثوقة وحلول تناسب مختلف أنواع المركبات.":
+    "Al-Sorouh works with specialist companies and suppliers in Germany, Italy and China to provide trusted-quality parts and solutions for different vehicle types.",
+  "تعاون في مجال تحديث وتخصيص المركبات الفاخرة.":
+    "Collaboration in luxury-vehicle upgrading and customisation.",
+  "الاستقبال والتوثيق": "Reception & documentation",
+  "الفحص والتشخيص": "Inspection & diagnosis",
+  "شرح الحالة والموافقة": "Explanation & approval",
+  التنفيذ: "Execution",
+  "مراجعة الجودة": "Quality review",
+  "التسليم والمتابعة": "Handover & follow-up",
+  "احجز استشارتك الخاصة": "Book your private consultation",
+  "شاركنا ما تحتاجه مركبتك، وسيتواصل معك مستشار الخدمة لترتيب التفاصيل.":
+    "Tell us what your vehicle needs and a service adviser will contact you to arrange the details.",
+  "تم استلام طلبك.": "Your request has been received.",
+  "ما الخدمة التي تحتاجها؟": "Which service do you need?",
+  "نوع المركبة وموديلها": "Vehicle type & model",
+  "رقم الهاتف": "Phone number",
+  "طريقة التواصل المفضلة": "Preferred contact method",
+  "المركبة والموديل": "Vehicle & model",
+  "مثال: BMW الفئة السابعة 2023": "Example: BMW 7 Series 2023",
+  "أرسل الطلب": "Send request",
+  "السيارات الاستثنائية،": "Exceptional vehicles",
+  "تستحق معاملة استثنائية.": "deserve exceptional care.",
+  "ركن الصروح لخدمات المركبات الفارهة.":
+    "Al-Sorouh for premium vehicle services.",
+  "تواصل عبر واتساب": "Contact via WhatsApp",
+  الصفحات: "Pages",
+  تواصل: "Contact",
+  الرئيسية: "Home",
+  "من نحن": "About us",
+  الخدمات: "Services",
+  الأعمال: "Projects",
+  المجلة: "Journal",
+  "منظومة عراقية متكاملة للعناية بالمركبات الفارهة، وصيانتها واستعادتها، بخبرة تمتد منذ عام 1989.":
+    "An integrated Iraqi system for premium vehicle care, maintenance and restoration, built on experience since 1989.",
+  "السبت – الخميس · 9:00 ص – 8:00 م": "Saturday – Thursday · 9:00 AM – 8:00 PM",
+  "الفخامة ليست مظهراً فقط.": "Luxury is not only appearance.",
+  "إنها دقة التعامل مع كل سطح.": "It is precision in treating every surface.",
+  "اسحب / مرّر ↔": "Drag / scroll ↔",
+  "الطلاء العميق": "Deep paint",
+  "التلميع التصحيحي": "Corrective polishing",
+  الجلد: "Leather",
+  "العناية الداخلية": "Interior care",
+  الألكانتارا: "Alcantara",
+  "تجديد المقصورة": "Cabin renewal",
+  "المعدن المصقول": "Brushed metal",
+  "استعادة الجنوط": "Wheel restoration",
+  "ألياف الكربون": "Carbon fibre",
+  التخصيص: "Customisation",
+  الزجاج: "Glass",
+  "الحماية والعزل": "Protection & insulation",
+  "فيلم الحماية": "Protective film",
+  "الخياطة الداخلية": "Interior stitching",
+  الاستعادة: "Restoration",
+  "تبدأ الرحلة بتوثيق كامل لحالة المركبة قبل لمسها.":
+    "The journey begins with a complete record of the vehicle’s condition before it is touched.",
+  "قراءة دقيقة لكل نظام، لا مكان للتخمين.":
+    "A precise reading of every system—there is no room for guesswork.",
+  "نعرض النتائج بوضوح، ولا نبدأ إلا بموافقتك.":
+    "We present the findings clearly and begin only with your approval.",
+  "أيدٍ خبيرة وأدوات دقيقة تنفّذ الخطة بعناية.":
+    "Expert hands and precise tools carry out the plan with care.",
+  "رقابة صارمة قبل أن تلمس المركبة الضوء مجدداً.":
+    "Strict control before the vehicle returns to the light.",
+  "تبقى على اطلاع بمراحل العمل عبر واتساب، حتى لحظة التسليم.":
+    "Stay informed of every stage through WhatsApp, right through handover.",
+  "خدش عميق": "Deep scratch",
+  "بهتان الطلاء": "Paint fade",
+  انبعاج: "Dent",
+  المركبة: "Vehicle",
+  "نوع الخدمة": "Service type",
+  "استعادة طلاء + حماية PPF": "Paint restoration + PPF protection",
+  "مدة التنفيذ": "Duration",
+  "6 أيام": "6 days",
+  "مراحل العمل": "Work stages",
+  "تشخيص · تصحيح · حماية": "Diagnose · Correct · Protect",
+  الضمان: "Warranty",
+  "حتى 5 سنوات": "Up to 5 years",
+  "النتيجة لا تبدأ من النهاية.": "The result does not begin at the end.",
+  "تبدأ من التشخيص الصحيح.": "It begins with the right diagnosis.",
+  "الخدمة المطلوبة": "Required service",
+  "طريقة التواصل": "Contact method",
+  واتساب: "WhatsApp",
+  مكالمة: "Phone call",
+};
+
+export function translate(value: string, locale: Locale) {
+  const normalized = value.trim().replace(/\s+/g, " ");
+  if (locale === "en") return en[normalized] ?? value;
+  const original = Object.entries(en).find(
+    ([, english]) => english === normalized,
+  )?.[0];
+  return original ?? value;
+}

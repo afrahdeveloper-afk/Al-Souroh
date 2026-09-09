@@ -1,0 +1,151 @@
+/* ===== Al-Sorouh — self-hosted brand typefaces =====
+ *
+ * PROTOCOL 1 (fonts): the only permitted type sources are the files shipped in
+ * `public/fonts`. No CDN, no Google Fonts, no system-font guessing.
+ * PROTOCOL 2 (no italic): the italic/oblique files that ship alongside these
+ * families are deliberately NOT registered. Nothing in the UI may slant, and
+ * `font-synthesis: none` in globals.css blocks the browser from faking it.
+ *
+ * Arabic  → Lama Sans (Standard width, WOFF2 + WOFF fallback)
+ * English → Lucida Sans (+ Lucida Sans Typewriter for technical/data labels)
+ */
+
+/* ---------- Arabic: Lama Sans ---------- */
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-Light.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-Regular.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-Medium.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-SemiBold.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-Bold.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-ExtraBold.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans';
+  src: url('/fonts/arabicFont/lamaSans/Standard/WOFF2/LamaSans-Black.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Standard/WOFF/LamaSans-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Arabic, Expanded width: Lama Sans Expanded ----------
+ * Dashboard-only, per the Admin Dashboard's Figma spec (page H1 titles are
+ * "Lama Sans SemiBold Expanded 600"). A separate font-family name (not a
+ * font-stretch value on "Lama Sans") since these are distinct static font
+ * files, not a variable font. */
+@font-face {
+  font-family: 'Lama Sans Expanded';
+  src: url('/fonts/arabicFont/lamaSans/Expanded/WOFF2/LamaSans-RegularExpanded.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Expanded/WOFF/LamaSans-RegularExpanded.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans Expanded';
+  src: url('/fonts/arabicFont/lamaSans/Expanded/WOFF2/LamaSans-MediumExpanded.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Expanded/WOFF/LamaSans-MediumExpanded.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans Expanded';
+  src: url('/fonts/arabicFont/lamaSans/Expanded/WOFF2/LamaSans-SemiBoldExpanded.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Expanded/WOFF/LamaSans-SemiBoldExpanded.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lama Sans Expanded';
+  src: url('/fonts/arabicFont/lamaSans/Expanded/WOFF2/LamaSans-BoldExpanded.woff2') format('woff2'),
+       url('/fonts/arabicFont/lamaSans/Expanded/WOFF/LamaSans-BoldExpanded.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- English: Lucida Sans ---------- */
+@font-face {
+  font-family: 'Lucida Sans';
+  src: url('/fonts/englishFont/lucidaSans/LSANS.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Demibold covers the 500–800 range; the family ships no heavier upright cut. */
+@font-face {
+  font-family: 'Lucida Sans';
+  src: url('/fonts/englishFont/lucidaSans/LSANSD.TTF') format('truetype');
+  font-weight: 500 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- English technical/data labels: Lucida Sans Typewriter ---------- */
+@font-face {
+  font-family: 'Lucida Sans Typewriter';
+  src: url('/fonts/englishFont/lucidaSans/LTYPE.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lucida Sans Typewriter';
+  src: url('/fonts/englishFont/lucidaSans/LTYPEB.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
